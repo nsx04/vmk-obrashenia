@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useOutletContext, useParams } from 'react-router-dom'
+import { Link, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { supabase } from '../supabase.js'
 import { STATUSES } from '../config.js'
 import { formatDate } from './AdminList.jsx'
@@ -7,6 +7,7 @@ import { formatDate } from './AdminList.jsx'
 export default function AdminMessage() {
   const { id } = useParams()
   const me = useOutletContext()
+  const navigate = useNavigate()
   const [msg, setMsg] = useState(undefined)
   const [reply, setReply] = useState('')
   const [status, setStatus] = useState('new')
@@ -61,6 +62,16 @@ export default function AdminMessage() {
     setBusy(false)
   }
 
+  // Удаление — только для администратора (право проверяет база)
+  async function remove() {
+    if (!window.confirm('Удалить обращение №' + msg.number + '? Это действие нельзя отменить.')) return
+    setBusy(true)
+    const { data, error } = await supabase.from('messages').delete().eq('id', id).select('id')
+    setBusy(false)
+    if (error || !data?.length) return setInfo({ type: 'error', text: 'Не удалось удалить обращение.' })
+    navigate('/admin')
+  }
+
   if (msg === undefined) return <p className="muted center">Загрузка…</p>
   if (msg === null) return <div className="alert error">Обращение не найдено или нет доступа.</div>
 
@@ -108,6 +119,11 @@ export default function AdminMessage() {
           <button className="btn" onClick={save} disabled={busy}>
             {busy ? 'Сохранение…' : 'Сохранить'}
           </button>
+          {me.is_admin && (
+            <button className="btn" style={{ background: '#fff', color: '#b91c1c', border: '1px solid #fecaca' }} onClick={remove} disabled={busy}>
+              Удалить обращение
+            </button>
+          )}
         </div>
       </div>
     </>
