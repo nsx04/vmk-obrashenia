@@ -6,6 +6,7 @@ import AdminLayout from './pages/AdminLayout.jsx'
 import AdminList from './pages/AdminList.jsx'
 import AdminMessage from './pages/AdminMessage.jsx'
 import AdminPassword from './pages/AdminPassword.jsx'
+import AdminStaff from './pages/AdminStaff.jsx'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminList />} />
         <Route path="m/:id" element={<AdminMessage />} />
+        <Route path="staff" element={<AdminStaff />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
