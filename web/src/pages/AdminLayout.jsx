@@ -39,6 +39,7 @@ export default function AdminLayout() {
         <Link to="/admin" className="brand">📩 Обращения</Link>
         <div className="who">
           <span>{me.is_admin ? 'Администратор' : me.position}</span>
+          {me.is_admin && <Link to="/admin/staff" className="btn-link">Сотрудники</Link>}
           <Link to="/admin/password" className="btn-link">Пароль</Link>
           <button className="btn-link" onClick={logout}>Выйти</button>
         </div>
